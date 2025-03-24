@@ -1,4 +1,4 @@
-import winreg, subprocess, json, psutil as ps
+import winreg, subprocess, json, psutil as ps, sys
 from time import sleep
 from cursesmenu import CursesMenu
 
@@ -94,6 +94,7 @@ def switch_steam_account(username: str):
         subprocess.run("start steam://open/main",
                    shell=True, check=True)
         print("Launching steam ...")
+        sleep(4)
         
         
     except Exception as e:
@@ -104,16 +105,20 @@ def switch_steam_account(username: str):
 def main(): 
     a_list = getKey("accounts")
     curAccount = getKey("active_account")
-    for i in range(len(a_list)):
-        if a_list[i] == curAccount:
-            a_list[i] = curAccount + " - active"
+    print(sys.argv)
+    if len(sys.argv) == 1:
+        for i in range(len(a_list)):
+            if a_list[i] == curAccount:
+                a_list[i] = curAccount + " - active"
 
-    selection = CursesMenu.get_selection(a_list, "Choose account to switch:")
-    # selected_index = menu.selected_option
-    print(f"You selected: {a_list[selection]}")
-    switch_steam_account(a_list[selection].split(" ")[0])
+        selection = CursesMenu.get_selection(a_list, "Choose account to switch:")
+        # selected_index = menu.selected_option
+        print(f"You selected: {a_list[selection]}")
+        switch_steam_account(a_list[selection].split(" ")[0])
+    else: 
+        if sys.argv[1] in a_list:
+            switch_steam_account(sys.argv[1])
     
 
 if __name__ == "__main__":
     main()
-    input()

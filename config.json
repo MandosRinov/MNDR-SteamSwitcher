@@ -1,11 +1,7 @@
 {
-    "active_account": "mandanin1",
+    "active_account": "kapralgames",
     "accounts": [
-        {
-            "username": "kapralgames"
-        },
-        {
-            "username": "mandanin1"
-        }
+        "kapralgames",
+        "mandanin1"
     ]
 }

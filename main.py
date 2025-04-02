@@ -1,13 +1,20 @@
 import winreg, keyboard, subprocess, json
 
 
-def get_config():
+def get_config() -> object:
+    """
+    return config with notes about current active user and various accounts
+    """
     with open("config.json", "r") as f:
         return json.load(f)
     
-def set_active_account(account):
+def getKey(key: str):
     config = get_config()
-    config["active_account"] = account
+    return config[key]
+
+def setKey(key:str, value: str|object|list):
+    config = get_config()
+    config[key] = value
     with open("config.json", "w") as f:
         json.dump(config, f, indent=4)
 
@@ -21,14 +28,17 @@ def get_steam_path():
         print(f"Error getting Steam path: {e}")
         return None
 
-def switch_steam_account(username):
-    active_account = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", 0, winreg.KEY_ALL_ACCESS)
-    set_active_account(username)
-    winreg.SetValueEx(active_account, "AutoLoginUser", 0, winreg.REG_SZ, username)
-    winreg.CloseKey(active_account)
+def switch_steam_account(username: str):
+    try:
+        active_account = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", 0, winreg.KEY_ALL_ACCESS)
+        setKey("active_account", username)
+        winreg.SetValueEx(active_account, "AutoLoginUser", 0, winreg.REG_SZ, username)
+        winreg.CloseKey(active_account)
+    except Exception as e:
+        print(f"Error with switching active user: {e}")
 
-# def main(): 
-#     keyboard.add_hotkey("ctrl+shift+l")
-# switch_steam_account(get_steam_path())
 
-set_active_account("mandanin1")
+
+def main():
+    current_active = getKey('active_account')
+    

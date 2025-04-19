@@ -22,6 +22,16 @@ def add_account(new_account):
     with open("config.json", "w") as f:
         json.dump(config, f, indent=4)
 
+def del_account(account : list):
+    config = get_config()
+    for i in range(len(config["accounts"])):
+        print(config["accounts"][i])
+        if config["accounts"][i] == account:
+            config['accounts'].pop(i)
+            break
+    with open('config.json', "w") as f:
+        json.dump(config, f, indent=4)
+
 def steam_running():
     key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"SOFTWARE\Valve\Steam\ActiveProcess", 0, winreg.KEY_ALL_ACCESS)
     steam_pid = winreg.QueryValueEx(key, "pid")[0]
@@ -107,21 +117,18 @@ def main():
     curAccount = getKey("active_account")
     print(sys.argv)
     if len(sys.argv) == 1:
-        from cursesmenu import CursesMenu
-        for i in range(len(a_list)):
-            if a_list[i] == curAccount:
-                a_list[i] = curAccount + " - active"
-
-        selection = CursesMenu.get_selection(a_list, "Choose account to switch:")
-        print(f"You selected: {a_list[selection]}")
-        switch_steam_account(a_list[selection].split(" ")[0])
+        pass
     else: 
         if sys.argv[1] in a_list:
             switch_steam_account(sys.argv[1])
         elif sys.argv[1] in ("-a", '--add') and sys.argv[2]:
             add_account(sys.argv[2])
+        elif sys.argv[1] in ("-d", '--delete') and sys.argv[2]:
+            del_account(sys.argv[2])
+        elif sys.argv[1] in ("-w", '--write'):
+            print(*a_list)
         else:
-            print("Invalid argument: ", sys.argv[1])
+            print("Invalid argument: ", sys.argv)
     
 
 if __name__ == "__main__":

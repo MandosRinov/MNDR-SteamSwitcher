@@ -1,3 +1,2 @@
-cursesmenu
 psutil
-winreg
+subprocess.run

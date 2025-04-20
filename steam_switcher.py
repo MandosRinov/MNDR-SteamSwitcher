@@ -4,10 +4,10 @@ from time import sleep
 
 def get_config():
     try: 
-        with open("config.json", "r") as f:
+        with open("./config.json", "r") as f:
             return json.load(f)
     except:
-        with open("config.json", "w") as f:
+        with open("./config.json", "w") as f:
             config = {
                 "active_account": "",
                 "accounts": []
@@ -40,7 +40,7 @@ def del_account(account : list):
         if accounts[i] == account:
             accounts.pop(i)
             break
-    with open('config.json', "w") as f:
+    with open('./config.json', "w") as f:
         json.dump(config, f, indent=4)
     print("Account deleted!")
 
@@ -90,7 +90,7 @@ def switch_steam_account(username: str):
         if active_account == username:
             print("You alright on this account")
             exit()
-        print("Change account from: ", active_account)
+        print("Change account from: ", active_account , " to ", username)
 
         winreg.SetValueEx(autoLoginUserRef, "AutoLoginUser", 0, winreg.REG_SZ, username)
         winreg.CloseKey(autoLoginUserRef)
@@ -124,8 +124,6 @@ def switch_steam_account(username: str):
 
 def main(): 
     accounts_list = getKey("accounts")
-    curAccount = getKey("active_account")
-    print("Current account: " + curAccount)
     if len(sys.argv) == 1:
         pass
     else: 
@@ -139,6 +137,7 @@ def main():
             print("Accounts: " + str(*accounts_list))
         else:
             print("Invalid argument: ", sys.argv)
+            print("Possible you dont have any accounts")
     
 
 if __name__ == "__main__":

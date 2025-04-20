@@ -1,3 +1,2 @@
-cursesmenu
 psutil
 subprocess.run

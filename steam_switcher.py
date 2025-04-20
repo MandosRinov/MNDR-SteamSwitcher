@@ -30,6 +30,19 @@ def add_account(new_account):
     config["accounts"].append(str(new_account))
     with open("./config.json", "w") as f:
         json.dump(config, f, indent=4)
+    print("Account added")
+
+def del_account(account : list):
+    config = get_config()
+    accounts  = config["accounts"]
+    print(f"Deleting account: {account} ...")
+    for i in range(len(accounts)):
+        if accounts[i] == account:
+            accounts.pop(i)
+            break
+    with open('config.json', "w") as f:
+        json.dump(config, f, indent=4)
+    print("Account deleted!")
 
 def steam_running():
     key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"SOFTWARE\Valve\Steam\ActiveProcess", 0, winreg.KEY_ALL_ACCESS)
@@ -94,10 +107,7 @@ def switch_steam_account(username: str):
                     sleep(1)
                     continue
                 else:
-                    msg = input("0/1: ")
-                    if msg:
-                        counter = 0
-                        continue
+                    print("Steam still running!")
         
 
         
@@ -113,30 +123,22 @@ def switch_steam_account(username: str):
 
 
 def main(): 
-    a_list = getKey("accounts")
+    accounts_list = getKey("accounts")
     curAccount = getKey("active_account")
-    print(sys.argv)
+    print("Current account: " + curAccount)
     if len(sys.argv) == 1:
         pass
-        # from cursesmenu import CursesMenu
-        # for i in range(len(a_list)):
-        #     if a_list[i] == curAccount:
-        #         a_list[i] = curAccount + " - active"
-
-        # selection = CursesMenu.get_selection(a_list, "Choose account to switch:")
-        # print(f"You selected: {a_list[selection]}")
-        # switch_steam_account(a_list[selection].split(" ")[0])
     else: 
-        if sys.argv[1] in a_list:
+        if sys.argv[1] in accounts_list:
             switch_steam_account(sys.argv[1])
         elif sys.argv[1] in ("-a", '--add') and sys.argv[2]:
-            if sys.argv[2] not in a_list:
-                add_account(sys.argv[2])
-            else:
-                print("Account already added")
+            add_account(sys.argv[2].strip())
+        elif sys.argv[1] in ("-d", '--delete') and sys.argv[2]:
+            del_account(sys.argv[2].strip())
+        elif sys.argv[1] in ("-w", '--write'):
+            print("Accounts: " + str(*accounts_list))
         else:
             print("Invalid argument: ", sys.argv)
-            print("-Possible you dont have any accounts")
     
 
 if __name__ == "__main__":

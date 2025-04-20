@@ -3,13 +3,22 @@ from time import sleep
 
 
 def get_config():
-    with open("config.json", "r") as f:
-        return json.load(f)
+    try: 
+        with open("config.json", "r") as f:
+            return json.load(f)
+    except:
+        with open("config.json", "w") as f:
+            config = {
+                "active_account": "",
+                "accounts": []
+            }
+            json.dump(config, f, indent=4)
+        return get_config()
     
 def setKey(key, value):
     config = get_config()
     config[key] = value
-    with open("config.json", "w") as f:
+    with open("./config.json", "w") as f:
         json.dump(config, f, indent=4)
     
 def getKey(key: str):
@@ -19,7 +28,7 @@ def getKey(key: str):
 def add_account(new_account):
     config = get_config()
     config["accounts"].append(str(new_account))
-    with open("config.json", "w") as f:
+    with open("./config.json", "w") as f:
         json.dump(config, f, indent=4)
 
 def steam_running():
@@ -64,6 +73,7 @@ def switch_steam_account(username: str):
     try:
         autoLoginUserRef = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", 0, winreg.KEY_ALL_ACCESS)
         active_account = winreg.QueryValueEx(autoLoginUserRef, "AutoLoginUser")[0]
+        setKey("active_account", active_account)
         if active_account == username:
             print("You alright on this account")
             exit()
@@ -107,21 +117,26 @@ def main():
     curAccount = getKey("active_account")
     print(sys.argv)
     if len(sys.argv) == 1:
-        from cursesmenu import CursesMenu
-        for i in range(len(a_list)):
-            if a_list[i] == curAccount:
-                a_list[i] = curAccount + " - active"
+        pass
+        # from cursesmenu import CursesMenu
+        # for i in range(len(a_list)):
+        #     if a_list[i] == curAccount:
+        #         a_list[i] = curAccount + " - active"
 
-        selection = CursesMenu.get_selection(a_list, "Choose account to switch:")
-        print(f"You selected: {a_list[selection]}")
-        switch_steam_account(a_list[selection].split(" ")[0])
+        # selection = CursesMenu.get_selection(a_list, "Choose account to switch:")
+        # print(f"You selected: {a_list[selection]}")
+        # switch_steam_account(a_list[selection].split(" ")[0])
     else: 
         if sys.argv[1] in a_list:
             switch_steam_account(sys.argv[1])
         elif sys.argv[1] in ("-a", '--add') and sys.argv[2]:
-            add_account(sys.argv[2])
+            if sys.argv[2] not in a_list:
+                add_account(sys.argv[2])
+            else:
+                print("Account already added")
         else:
-            print("Invalid argument: ", sys.argv[1])
+            print("Invalid argument: ", sys.argv)
+            print("-Possible you dont have any accounts")
     
 
 if __name__ == "__main__":

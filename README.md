@@ -1,13 +1,11 @@
-#Simple steam switcher account on python
-##This steam switcher use cmd arguments for controling
+# Simple steam switcher account on python
+> this steam switcher use cmd arguments for controling
 
-###Install requirements from requirements.txt using:
-```
-pip install -r requirements
-```
-###or set them up manually
+### Install requirements from requirements.txt using:
+``` pip install -r requirements.txt ```
+### or set them up manually
 
-##Example by application:
+## Example by application:
 ```
 python steam_switcher.py <account_name>
 ```

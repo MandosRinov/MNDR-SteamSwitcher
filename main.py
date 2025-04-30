@@ -15,6 +15,7 @@ def get_config():
             json.dump(config, f, indent=4)
         return get_config()
     
+#ToDo: make a rewrite AllowAutoLogin line to value 1
 def get_accounts():
     loginUsersPath = get_steam_path() + "\\config\\loginusers.vdf"
     if (os.path.exists(loginUsersPath)):
@@ -31,10 +32,7 @@ def get_accounts():
         
 
         print(accountsName)
-        
-
-
-    
+           
 def setKey(key, value):
     config = get_config()
     config[key] = value
@@ -97,30 +95,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# "users"
-# {
-# 	"76561199405860839"
-# 	{
-# 		"AccountName"		"mandanin1"
-# 		"PersonaName"		"MandaRinchikS"
-# 		"RememberPassword"		"1"
-# 		"WantsOfflineMode"		"0"
-# 		"SkipOfflineModeWarning"		"0"
-# 		"AllowAutoLogin"		"0"
-# 		"MostRecent"		"0"
-# 		"Timestamp"		"1746046184"
-# 	}
-# 	"76561198415075961"
-# 	{
-# 		"AccountName"		"kapralgames"
-# 		"PersonaName"		"MaND3ve"
-# 		"RememberPassword"		"1"
-# 		"WantsOfflineMode"		"0"
-# 		"SkipOfflineModeWarning"		"0"
-# 		"AllowAutoLogin"		"0"
-# 		"MostRecent"		"1"
-# 		"Timestamp"		"1746048733"
-# 	}
-# }

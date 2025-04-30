@@ -1,2 +1,4 @@
 config.json
 output
+
+__pycache__

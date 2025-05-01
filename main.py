@@ -15,23 +15,20 @@ def get_config():
             json.dump(config, f, indent=4)
         return get_config()
     
-#ToDo: make a rewrite AllowAutoLogin line to value 1
 def get_accounts():
     loginUsersPath = get_steam_path() + "\\config\\loginusers.vdf"
     if (os.path.exists(loginUsersPath)):
         with open(loginUsersPath, "r+", encoding="utf8") as file:
             file_text = file.read()
             accountsName_raw = re.findall(r'"AccountName"\t\t"[a-z0-1]{1,}"', file_text)
-            allowAutoLogin_raw = re.finditer(r'"AllowAutoLogin"\t\t"[0-1]"', file_text)
+            file_text = file_text.replace('"AllowAutoLogin"\t\t"0"', '"AllowAutoLogin"\t\t"1"')
+                
+            file.seek(0)
+            file.write(file_text)
 
-            for autoLogin in allowAutoLogin_raw:
-                file.seek(autoLogin.span()[1]-2)
-                print(file.read(1))
-        accountsName = [accountName_raw.split("\t\t")[1] for accountName_raw in accountsName_raw]
+        accountsName = [accountName_raw.split("\t\t")[1].replace('"', '') for accountName_raw in accountsName_raw]
 
-        
-
-        print(accountsName)
+        return accountsName
            
 def setKey(key, value):
     config = get_config()
@@ -82,8 +79,9 @@ def switch_steam_account(username: str):
 
 
 def main(): 
-    accounts_list = getKey("accounts")
-    get_accounts()
+    accounts_list = get_accounts()
+    setKey("accounts", accounts_list)
+
     if len(sys.argv) == 1:
         pass
     else: 

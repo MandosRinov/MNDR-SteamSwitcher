@@ -20,7 +20,7 @@ def get_accounts():
     if (os.path.exists(loginUsersPath)):
         with open(loginUsersPath, "r+", encoding="utf8") as file:
             file_text = file.read()
-            accountsName_raw = re.findall(r'"AccountName"\t\t"[a-z0-1]{1,}"', file_text)
+            accountsName_raw = re.findall(r'"AccountName"\t\t"[\S]{1,}"', file_text)
             file_text = file_text.replace('"AllowAutoLogin"\t\t"0"', '"AllowAutoLogin"\t\t"1"')
                 
             file.seek(0)
@@ -41,6 +41,17 @@ def getKey(key: str):
     return config[key]
 
 
+def updateConfig():
+    autoLoginUserRef = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", 0, winreg.KEY_ALL_ACCESS)
+    active_account = winreg.QueryValueEx(autoLoginUserRef, "AutoLoginUser")[0]
+    winreg.CloseKey(autoLoginUserRef)
+    setKey("active_account", active_account)
+
+    accounts_list = get_accounts()
+    setKey("accounts", accounts_list)
+    return [active_account, accounts_list]
+
+
 def switch_steam_account(username: str):
     try:
         autoLoginUserRef = winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam", 0, winreg.KEY_ALL_ACCESS)
@@ -49,7 +60,7 @@ def switch_steam_account(username: str):
             print("You already on this account")
             exit()
         print("Change account from: ", active_account , " to ", username)
-
+        setKey("active_account", active_account)
         winreg.SetValueEx(autoLoginUserRef, "AutoLoginUser", 0, winreg.REG_SZ, username)
         winreg.CloseKey(autoLoginUserRef)
 
@@ -79,11 +90,10 @@ def switch_steam_account(username: str):
 
 
 def main(): 
-    accounts_list = get_accounts()
-    setKey("accounts", accounts_list)
+    active_account, accounts_list = updateConfig()
 
     if len(sys.argv) == 1:
-        pass
+        print(*accounts_list)
     else: 
         if sys.argv[1] in accounts_list:
             switch_steam_account(sys.argv[1])

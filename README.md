@@ -8,5 +8,16 @@ pip install -r requirements.txt
 ### or set them up manually
 
 ## Example by application:
-``` python steam_switcher.py <account_name> ```
->This command switch account on the written istead <account_name>
+1. update config
+```
+python steam_switcher.py
+steam-switcher.exe (if the application is built)
+```
+>This command update config 
+
+3. switch account
+```
+python steam_switcher.py <account_name> 
+steam-switcher.exe <account_name> (if the application is built)
+```
+>This command update config file and switch account on the written istead <account_name>
